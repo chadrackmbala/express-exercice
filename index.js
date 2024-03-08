@@ -1,7 +1,7 @@
 const express = require("express");
 const server = express();
 const articles = require("./articles.json");
-server.use(parseIdToInt);
+// server.use(parseIdToInt);
 
 server.get("/", (req, res) => {
     console.log("rendu serveur");
@@ -14,9 +14,11 @@ server.get("/articles", (req, res) => {
     res.send({articles});
 });
 
-server.get("/articles/:id", (req, res) => {
+server.get("/articles/:id", parseIdToInt, (req, res) => {
     const id = req.params.id;
-    const foundArticle = articles.find(article => article.id == id)
+    const newOne = req.new;
+    console.log({id, newOne});
+    const foundArticle = articles.find(article => article.id === id)
     console.log(`Article ${id}`);
     if(foundArticle) {
         res.status(200).json(foundArticle);
@@ -25,11 +27,11 @@ server.get("/articles/:id", (req, res) => {
     }
 })
 
-
 function parseIdToInt (req, res, next) {
     console.log("parse id to int");
-    req.params.is = parseInt(req.params.id, 10);
+    req.params.id = parseInt(req.params.id, 10);
     console.log("test");
+    req.new ="NEW"
     next();
 }
 
